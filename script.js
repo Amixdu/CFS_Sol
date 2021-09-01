@@ -1,10 +1,56 @@
+// for unobtrusive js
+document.addEventListener("DOMContentLoaded", function(event) {
+    // handling name events
+    var name = document.getElementById("name")
+    name.addEventListener("focus", greetWithName)
+    name.addEventListener("blur", greetWithName)
 
-// display a greeting message
-function welcomeMessage(){
-    document.getElementById("nameOutput").innerHTML = "Hello there! What's your name?"
-}
+    // handling date events
+    var date = document.getElementById("date")
+    date.addEventListener("focus", ageGuess)
+    date.addEventListener("blur", agePrompt)
 
-// display a grreting with name
+    // handling theme change
+    var light = document.getElementById("light")
+    light.addEventListener("click", lightMode)
+    
+    var dark = document.getElementById("dark")
+    dark.addEventListener("click", darkMode)
+
+    // handling HTML events
+    const htmlButton = document.getElementById("html")
+    htmlButton.addEventListener("click", moveHTML)
+    htmlButton.addEventListener("mouseover", function(){
+        changeColour(htmlButton)
+    })
+    htmlButton.addEventListener("mouseout", function(){
+        changeColourBack(htmlButton)
+    })
+
+    // handling CSS events
+    const cssButton = document.getElementById("css")
+    cssButton.addEventListener("click", moveCSS)
+    cssButton.addEventListener("mouseover", function(){
+        changeColour(cssButton)
+    })
+    cssButton.addEventListener("mouseout", function(){
+        changeColourBack(cssButton)
+    })
+
+    // handling JavaScript events
+    const jsButton = document.getElementById("javascript")
+    jsButton.addEventListener("click", moveJS)
+    jsButton.addEventListener("mouseover", function(){
+        changeColour(jsButton)
+    })
+    jsButton.addEventListener("mouseout", function(){
+        changeColourBack(jsButton)
+    })
+})
+
+
+
+// display a greeting with/without name
 function greetWithName(){
     const name = document.getElementById("name")
     if (name.value == ""){
@@ -16,30 +62,43 @@ function greetWithName(){
     
 }
 
-// age guess message
+// age guess message when on focus
 function ageGuess(){
-    document.getElementById("ageOutput").innerHTML = "Lemme guess, your age is..."
+    const date = document.getElementById("date")
+    if (date.value == ""){
+        document.getElementById("ageOutput").innerHTML = "Lemme guess, your age is..."
+    }
+    
 }
 
-// age prompt message
+// age prompt message when blurred
 function agePrompt(){
     const date = document.getElementById("date")
     if (date.value == ""){
         document.getElementById("ageOutput").innerHTML = "Would you mind entering your birthday?"
     }
-    // if value is there, invoke ageInput() function
+    // if value is there, invoke ageOutput() function
     else{
-        ageInput()
+        ageOutput()
     }
 }
 
-// age input
-function ageInput(){
+// calculate and display age
+function ageOutput(){
+    const dateOutput = document.getElementById("ageOutput")
     const date = document.getElementById("date").value
-    const todayDate = new Date()
-    const splitDate = date.split('-')
-    document.getElementById("ageOutput").innerHTML = "Your age is " + (todayDate.getFullYear() - parseInt(splitDate[0])) + " years old!"
+    // new date object from users DOB
+    const dateString = date.toString()
+    const birthday = new Date(dateString)
+    // number of milliseconds elapsed since January 1, 1970 00:00:00 UTC
+    const millisecondsToday = Date.now()
+    // creating a new date from the difference in milliseconds
+    const diff = millisecondsToday - birthday.getTime()
+    const ageFromDiff = new Date(diff)
+    // since the milliseconds for new date is counted from 1970, subtract 1970 to get age
+    dateOutput.innerHTML = "Your age is " + (ageFromDiff.getUTCFullYear() - 1970) + " years old!"
 }
+
 
 
 // change to dark mode
@@ -116,6 +175,8 @@ function moveHTMLBack(){
     button.innerHTML = "HTML"
     button.id = "html"
     button.setAttribute("onClick", "moveHTML()")
+    button.setAttribute("onmouseover", "changeColour(document.getElementById('html'))")
+    button.setAttribute("onmouseout", "changeColourBack(document.getElementById('html'))")
     button.style.marginRight = "2.5px"
     button.style.marginLeft = "2.5px"
     document.getElementById("skills").after(button)
@@ -130,6 +191,8 @@ function moveCSSBack(){
     button.innerHTML = "CSS"
     button.id = "css"
     button.setAttribute("onClick", "moveCSS()")
+    button.setAttribute("onmouseover", "changeColour(document.getElementById('css'))")
+    button.setAttribute("onmouseout", "changeColourBack(document.getElementById('css'))")
     button.style.marginRight = "2.5px"
     button.style.marginLeft = "2.5px"
     // if HTML button exists, move the button after it
@@ -151,6 +214,8 @@ function moveJSBack(){
     button.innerHTML = "JavaScript"
     button.id = "javascript"
     button.setAttribute("onClick", "moveJS()")
+    button.setAttribute("onmouseover", "changeColour(document.getElementById('javascript'))")
+    button.setAttribute("onmouseout", "changeColourBack(document.getElementById('javascript'))")
     button.style.marginRight = "2.5px"
     button.style.marginLeft = "2.5px"
     // if CSS button exists, move the button after it
